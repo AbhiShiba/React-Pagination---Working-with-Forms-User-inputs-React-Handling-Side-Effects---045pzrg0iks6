@@ -5,18 +5,21 @@ import { Post } from './Post';
 
 const PostList = () => {
     
-    const [data1,setData1] = useState("");
-    const [buttonData,setButtonData] = useState("");
+    const [data,setData1] = useState([]);
+    const [buttonData,setButtonData] = useState("1");
+    const [loading,setLoading] = useState(true)
     
 
-    let url = buttonData == "" ? "https://jsonplaceholder.typicode.com/posts?_page=1&_limit=5" : "https://jsonplaceholder.typicode.com/posts?_page="+buttonData+"&_limit=5";
+    let url = "https://jsonplaceholder.typicode.com/posts?_page="+buttonData+"&_limit=5";
     
 
     useEffect(() => {
+        setLoading(true);
         const fetchPost = async () => {
             const response = await fetch(url);
             
             const newData = await response.json();
+            setLoading(false)
             
            setData1(newData);
         }
@@ -30,9 +33,13 @@ const PostList = () => {
         
     return (
         <>
-        
-        <Post data = {data1}/>
-      
+        <div className="post-list">
+                {
+                    loading ?
+                        <div className="loader">Loading...</div>
+                        : data.map(post => <Post body={post.body} title={post.title} key={post.id} />)
+                }
+            </div>
             
             
             <PaginationButtonsList buttonPressed={ButtonFunc}/>
